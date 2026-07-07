@@ -2,10 +2,11 @@
  * 如意数据大屏 - 仪表盘数据 Store
  *
  * 管理所有仪表盘状态，通过 services 层获取数据。
+ * 支持实时刷新控制：startRealtime / stopRealtime
  */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import type {
   SummaryMetrics,
   TrendDataPoint,
@@ -13,6 +14,7 @@ import type {
   RankingItem,
   RadarDimension,
   ActivityItem,
+  HubNode,
 } from '../types/dashboard'
 import {
   fetchSummary,
@@ -21,6 +23,7 @@ import {
   fetchRanking,
   fetchRadar,
   fetchActivities,
+  fetchHubNodes,
 } from '../services/dashboardService'
 import { logger } from '../logs/logger'
 
@@ -52,8 +55,17 @@ export const useDashboardStore = defineStore('dashboard', () => {
   /** 动态活动列表 */
   const activities = ref<ActivityItem[]>([])
 
+  /** 数据中枢节点 */
+  const hubNodes = ref<HubNode[]>([])
+
   /** 刷新时间 */
   const lastUpdated = ref<string>('')
+
+  /** 实时刷新状态 */
+  const isRealtime = ref(false)
+
+  /** 定时器 ID（shallowRef 避免深层响应） */
+  const refreshTimer = shallowRef<ReturnType<typeof setInterval> | null>(null)
 
   /**
    * 加载所有仪表盘数据
@@ -63,9 +75,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     error.value = null
 
     try {
-      logger.info('[DashboardStore] 开始加载所有数据')
-
-      // 并行请求所有数据
+      // 并行请求所有数据（实时模拟器中 nextFrame 按时间窗口缓存）
       const results = await Promise.allSettled([
         fetchSummary(),
         fetchTrend(),
@@ -73,9 +83,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
         fetchRanking(),
         fetchRadar(),
         fetchActivities(),
+        fetchHubNodes(),
       ])
 
-      // 分别处理每个请求的结果
       if (results[0].status === 'fulfilled') summary.value = results[0].value
       else logger.error('[DashboardStore] 获取摘要失败', results[0].reason)
 
@@ -94,8 +104,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
       if (results[5].status === 'fulfilled') activities.value = results[5].value
       else logger.error('[DashboardStore] 获取活动失败', results[5].reason)
 
+      if (results[6].status === 'fulfilled') hubNodes.value = results[6].value
+      else logger.error('[DashboardStore] 获取中枢节点失败', results[6].reason)
+
       lastUpdated.value = new Date().toLocaleString('zh-CN')
-      logger.info('[DashboardStore] 所有数据加载完成')
     } catch (err) {
       const msg = err instanceof Error ? err.message : '未知错误'
       error.value = msg
@@ -106,7 +118,31 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   /**
-   * 重新加载所有数据
+   * 启动实时刷新（每 2 秒自动拉取新数据）
+   */
+  function startRealtime(): void {
+    if (refreshTimer.value) return // 避免重复启动
+    isRealtime.value = true
+    logger.info('[DashboardStore] 实时刷新已启动 (2s 间隔)')
+    refreshTimer.value = setInterval(() => {
+      loadAllData()
+    }, 2000)
+  }
+
+  /**
+   * 停止实时刷新
+   */
+  function stopRealtime(): void {
+    if (refreshTimer.value) {
+      clearInterval(refreshTimer.value)
+      refreshTimer.value = null
+    }
+    isRealtime.value = false
+    logger.info('[DashboardStore] 实时刷新已停止')
+  }
+
+  /**
+   * 手动刷新（保留，不会影响实时模式状态）
    */
   async function refresh(): Promise<void> {
     logger.info('[DashboardStore] 手动刷新数据')
@@ -122,8 +158,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
     ranking,
     radar,
     activities,
+    hubNodes,
     lastUpdated,
+    isRealtime,
     loadAllData,
     refresh,
+    startRealtime,
+    stopRealtime,
   }
 })

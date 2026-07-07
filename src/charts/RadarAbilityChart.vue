@@ -18,28 +18,29 @@ const props = defineProps<{
 
 const chartOption = computed(() => ({
   tooltip: {
-    backgroundColor: 'rgba(6, 30, 65, 0.9)',
-    borderColor: 'rgba(64, 169, 255, 0.3)',
+    backgroundColor: 'rgba(4, 18, 40, 0.92)',
+    borderColor: 'rgba(54, 207, 201, 0.25)',
     textStyle: { color: '#e8f0fe', fontSize: 12 },
   },
   radar: {
     indicator: props.data.map((d) => ({ name: d.name, max: d.max })),
     shape: 'circle',
     splitNumber: 4,
+    radius: '68%',
     axisName: {
-      color: 'rgba(232, 240, 254, 0.65)',
+      color: 'rgba(232, 240, 254, 0.55)',
       fontSize: 11,
     },
     splitLine: {
-      lineStyle: { color: 'rgba(64, 169, 255, 0.1)' },
+      lineStyle: { color: 'rgba(54, 207, 201, 0.08)' },
     },
     splitArea: {
       areaStyle: {
-        color: ['rgba(64, 169, 255, 0.02)', 'rgba(64, 169, 255, 0.05)'],
+        color: ['rgba(54, 207, 201, 0.02)', 'rgba(79, 195, 247, 0.04)'],
       },
     },
     axisLine: {
-      lineStyle: { color: 'rgba(64, 169, 255, 0.12)' },
+      lineStyle: { color: 'rgba(54, 207, 201, 0.1)' },
     },
   },
   series: [
@@ -50,14 +51,14 @@ const chartOption = computed(() => ({
           value: props.data.map((d) => d.value),
           name: '当前能力',
           areaStyle: {
-            color: 'rgba(64, 169, 255, 0.2)',
+            color: 'rgba(54, 207, 201, 0.18)',
           },
           lineStyle: {
-            color: '#40a9ff',
+            color: '#36cfc9',
             width: 2,
           },
           itemStyle: {
-            color: '#40a9ff',
+            color: '#4fc3f7',
           },
         },
       ],

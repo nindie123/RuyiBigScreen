@@ -15,6 +15,7 @@ import type {
   RankingItem,
   RadarDimension,
   ActivityItem,
+  HubNode,
   DashboardData,
   ApiResponse,
 } from '../types/dashboard'
@@ -22,9 +23,27 @@ import httpClient from './http'
 import { isMock, getApiBaseUrl } from './dataSource'
 import { logger } from '../logs/logger'
 import { getMockDashboardData } from '../mocks/dashboardMock'
+import { nextFrame } from '../mocks/realtimeDashboardSimulator'
 
 /** API 路径前缀 */
 const API_PATH = '/dashboard'
+
+/**
+ * 实时数据快照缓存。
+ * 在同一时间窗口（50ms）内多次调用返回同一帧数据，
+ * 确保 Promise.allSettled 并发请求获取一致的数据快照。
+ */
+let cachedSnapshot: DashboardData | null = null
+let lastSnapshotTime = 0
+
+function getRealtimeSnapshot(): DashboardData {
+  const now = Date.now()
+  if (!cachedSnapshot || now - lastSnapshotTime > 50) {
+    cachedSnapshot = nextFrame()
+    lastSnapshotTime = now
+  }
+  return cachedSnapshot
+}
 
 /**
  * 通用请求包装
@@ -55,49 +74,56 @@ async function fetchData<T>(
 
 /** 获取核心指标 */
 export async function fetchSummary(): Promise<SummaryMetrics> {
-  const mock = getMockDashboardData().summary
+  const mock = isMock ? getRealtimeSnapshot().summary : getMockDashboardData().summary
   const res = await fetchData(`${API_PATH}/summary`, mock)
   return res.data
 }
 
 /** 获取趋势数据 */
 export async function fetchTrend(): Promise<TrendDataPoint[]> {
-  const mock = getMockDashboardData().trend
+  const mock = isMock ? getRealtimeSnapshot().trend : getMockDashboardData().trend
   const res = await fetchData(`${API_PATH}/trend`, mock)
   return res.data
 }
 
 /** 获取分类分布 */
 export async function fetchCategories(): Promise<CategoryItem[]> {
-  const mock = getMockDashboardData().categories
+  const mock = isMock ? getRealtimeSnapshot().categories : getMockDashboardData().categories
   const res = await fetchData(`${API_PATH}/categories`, mock)
   return res.data
 }
 
 /** 获取排名数据 */
 export async function fetchRanking(): Promise<RankingItem[]> {
-  const mock = getMockDashboardData().ranking
+  const mock = isMock ? getRealtimeSnapshot().ranking : getMockDashboardData().ranking
   const res = await fetchData(`${API_PATH}/ranking`, mock)
   return res.data
 }
 
 /** 获取雷达数据 */
 export async function fetchRadar(): Promise<RadarDimension[]> {
-  const mock = getMockDashboardData().radar
+  const mock = isMock ? getRealtimeSnapshot().radar : getMockDashboardData().radar
   const res = await fetchData(`${API_PATH}/radar`, mock)
   return res.data
 }
 
 /** 获取动态活动列表 */
 export async function fetchActivities(): Promise<ActivityItem[]> {
-  const mock = getMockDashboardData().activities
+  const mock = isMock ? getRealtimeSnapshot().activities : getMockDashboardData().activities
   const res = await fetchData(`${API_PATH}/activities`, mock)
+  return res.data
+}
+
+/** 获取数据中枢节点 */
+export async function fetchHubNodes(): Promise<HubNode[]> {
+  const mock = isMock ? getRealtimeSnapshot().hubNodes : getMockDashboardData().hubNodes
+  const res = await fetchData(`${API_PATH}/hub-nodes`, mock)
   return res.data
 }
 
 /** 获取完整仪表盘数据 */
 export async function fetchDashboardAll(): Promise<DashboardData> {
-  const mock = getMockDashboardData()
+  const mock = isMock ? getRealtimeSnapshot() : getMockDashboardData()
   const res = await fetchData(`${API_PATH}/all`, mock)
   return res.data
 }

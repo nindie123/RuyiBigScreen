@@ -49,6 +49,16 @@ export interface ActivityItem {
   source?: string
 }
 
+/** 数据中枢节点 */
+export interface HubNode {
+  id: string
+  name: string
+  value: number
+  coord: [number, number]
+  status: 'good' | 'warning' | 'danger'
+  description: string
+}
+
 /** 仪表盘完整数据 */
 export interface DashboardData {
   summary: SummaryMetrics
@@ -57,6 +67,7 @@ export interface DashboardData {
   ranking: RankingItem[]
   radar: RadarDimension[]
   activities: ActivityItem[]
+  hubNodes: HubNode[]
 }
 
 /** 数据源类型 */

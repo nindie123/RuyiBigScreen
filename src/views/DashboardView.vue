@@ -6,7 +6,7 @@
         label="今日访问量"
         :value="store.summary.todayVisits"
         icon="👥"
-        color="#40a9ff"
+        color="#4fc3f7"
         :loading="store.loading"
         :trend="{ direction: 'up', text: '较昨日 +12.5%' }"
       />
@@ -22,7 +22,7 @@
         label="活跃用户数"
         :value="store.summary.activeUsers"
         icon="👤"
-        color="#73d13d"
+        color="#5cdbd3"
         :loading="store.loading"
         :trend="{ direction: 'up', text: '较昨日 +5.7%' }"
       />
@@ -30,7 +30,7 @@
         label="系统健康度"
         :value="store.summary.systemHealth"
         icon="❤️"
-        color="#ffc53d"
+        color="#d4a017"
         :loading="store.loading"
         :trend="{ direction: 'down', text: '较昨日 -0.3%' }"
         :formatter="(v: number) => v.toFixed(1) + ' %'"
@@ -47,9 +47,9 @@
       <PieStatusChart :data="store.categories" :loading="store.loading" />
     </template>
 
-    <!-- 中间：地图/态势总览 -->
+    <!-- 中间：如意数据中枢 -->
     <template #center>
-      <MapOverviewChart :loading="store.loading" />
+      <DataHubChart :data="store.hubNodes" :loading="store.loading" />
     </template>
 
     <!-- 右侧-上：城市排名 -->
@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import BigScreenLayout from '../layouts/BigScreenLayout.vue'
 import BasePanel from '../components/BasePanel.vue'
 import MetricCard from '../components/MetricCard.vue'
@@ -93,15 +93,21 @@ import LineTrendChart from '../charts/LineTrendChart.vue'
 import BarRankingChart from '../charts/BarRankingChart.vue'
 import PieStatusChart from '../charts/PieStatusChart.vue'
 import RadarAbilityChart from '../charts/RadarAbilityChart.vue'
-import MapOverviewChart from '../charts/MapOverviewChart.vue'
+import DataHubChart from '../charts/DataHubChart.vue'
 import { useDashboardStore } from '../stores/dashboardStore'
 import { logger } from '../logs/logger'
 
 const store = useDashboardStore()
 
 onMounted(() => {
-  logger.info('[DashboardView] 页面已挂载，开始加载数据')
+  logger.info('[DashboardView] 页面已挂载，启动实时刷新')
   store.loadAllData()
+  store.startRealtime()
+})
+
+onUnmounted(() => {
+  logger.info('[DashboardView] 页面卸载，停止实时刷新')
+  store.stopRealtime()
 })
 </script>
 
@@ -120,11 +126,11 @@ onMounted(() => {
       width: 3px;
     }
     &::-webkit-scrollbar-track {
-      background: rgba(64, 169, 255, 0.05);
+      background: rgba(54, 207, 201, 0.04);
       border-radius: 2px;
     }
     &::-webkit-scrollbar-thumb {
-      background: rgba(64, 169, 255, 0.2);
+      background: rgba(54, 207, 201, 0.15);
       border-radius: 2px;
     }
   }
@@ -139,11 +145,11 @@ onMounted(() => {
     transition: background 0.2s;
 
     &:hover {
-      background: rgba(64, 169, 255, 0.05);
+      background: rgba(54, 207, 201, 0.04);
     }
 
     &:nth-child(odd) {
-      background: rgba(64, 169, 255, 0.02);
+      background: rgba(54, 207, 201, 0.015);
     }
   }
 
@@ -153,10 +159,10 @@ onMounted(() => {
     border-radius: 50%;
     flex-shrink: 0;
 
-    &--info { background: #40a9ff; }
-    &--success { background: #52c41a; }
-    &--warning { background: #faad14; box-shadow: 0 0 6px rgba(250, 173, 20, 0.5); }
-    &--alert { background: #ff4d4f; box-shadow: 0 0 6px rgba(255, 77, 79, 0.5); animation: blink 1.2s infinite; }
+    &--info { background: #4fc3f7; box-shadow: 0 0 5px rgba(79, 195, 247, 0.35); }
+    &--success { background: #36cfc9; box-shadow: 0 0 5px rgba(54, 207, 201, 0.35); }
+    &--warning { background: #d4a017; box-shadow: 0 0 5px rgba(212, 160, 23, 0.35); }
+    &--alert { background: #ff6b6b; box-shadow: 0 0 6px rgba(255, 107, 107, 0.5); animation: blink 1.2s infinite; }
   }
 
   &__message {

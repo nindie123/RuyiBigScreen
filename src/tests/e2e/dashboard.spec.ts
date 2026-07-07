@@ -37,7 +37,7 @@ test.describe('RuyiBigScreen Dashboard', () => {
     await page.waitForTimeout(2000)
 
     // 验证面板标题存在（每个图表都在 BasePanel 中）
-    const panelTitles = ['访问趋势', '分类占比', '中心态势总览', '城市排名', '能力雷达', '实时动态']
+    const panelTitles = ['访问趋势', '分类占比', '如意数据中枢', '城市排名', '能力雷达', '实时动态']
 
     for (const title of panelTitles) {
       const panel = page.locator('text=' + title)
@@ -86,6 +86,35 @@ test.describe('RuyiBigScreen Dashboard', () => {
     await page.waitForTimeout(3000)
 
     // 验证没有严重错误（忽略 favicon 404 等非关键错误）
+    const criticalErrors = consoleErrors.filter(
+      (err) => !err.includes('favicon') && !err.includes('net::ERR_ABORTED')
+    )
+    expect(criticalErrors.length).toBe(0)
+  })
+
+  test('should sustain realtime refresh without errors', async ({ page }) => {
+    // 收集控制台错误
+    const consoleErrors: string[] = []
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text())
+      }
+    })
+
+    await page.goto('/')
+    await page.waitForTimeout(2000)
+
+    // 确认初始数据已加载
+    await expect(page.locator('text=如意数据中枢')).toBeVisible({ timeout: 5000 })
+
+    // 等待约 3 秒，至少经历一次实时刷新周期
+    await page.waitForTimeout(4000)
+
+    // 页面仍然正常工作
+    await expect(page.locator('text=如意数据中枢')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('text=今日访问量')).toBeVisible({ timeout: 5000 })
+
+    // 仍然没有严重错误
     const criticalErrors = consoleErrors.filter(
       (err) => !err.includes('favicon') && !err.includes('net::ERR_ABORTED')
     )

@@ -41,3 +41,7 @@ Thumbs.db
 
 # Temp files
 screenshot.png
+*.snap
+
+# Automation artifacts (not committed)
+artifacts/

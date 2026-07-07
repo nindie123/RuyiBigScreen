@@ -5,14 +5,14 @@ export default defineConfig({
   timeout: 30000,
   retries: 1,
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:10001',
     headless: true,
     viewport: { width: 1920, height: 1080 },
     screenshot: 'only-on-failure',
   },
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:10001',
     reuseExistingServer: !process.env.CI,
     timeout: 30000,
   },

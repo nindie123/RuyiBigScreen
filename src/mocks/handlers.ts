@@ -13,6 +13,7 @@ import {
   mockRanking,
   mockRadar,
   mockActivities,
+  mockHubNodes,
 } from './dashboardMock'
 
 /** 基础 API 路径 */
@@ -61,6 +62,11 @@ export const handlers = [
     return HttpResponse.json(createResponse(mockActivities))
   }),
 
+  /** 获取数据中枢节点 */
+  http.get(`${API_BASE}/dashboard/hub-nodes`, () => {
+    return HttpResponse.json(createResponse(mockHubNodes))
+  }),
+
   /** 获取完整仪表盘数据（一次性获取所有） */
   http.get(`${API_BASE}/dashboard/all`, () => {
     return HttpResponse.json(
@@ -71,6 +77,7 @@ export const handlers = [
         ranking: mockRanking,
         radar: mockRadar,
         activities: mockActivities,
+        hubNodes: mockHubNodes,
       })
     )
   }),

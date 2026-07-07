@@ -12,6 +12,7 @@ import type {
   RankingItem,
   RadarDimension,
   ActivityItem,
+  HubNode,
   DashboardData,
 } from '../types/dashboard'
 
@@ -22,7 +23,9 @@ function generateDates(days: number): string[] {
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now)
     d.setDate(d.getDate() - i)
-    dates.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+    dates.push(
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    )
   }
   return dates
 }
@@ -36,9 +39,7 @@ export const mockSummary: SummaryMetrics = {
 
 export const mockTrend: TrendDataPoint[] = generateDates(14).map((date, index) => {
   const base = 80000 + Math.random() * 70000
-  const prevBase = index > 0
-    ? 80000 + Math.random() * 70000
-    : base * 0.95
+  const prevBase = index > 0 ? 80000 + Math.random() * 70000 : base * 0.95
   return {
     date,
     value: Math.round(base),
@@ -54,10 +55,10 @@ if (mockTrend.length > 0) {
 }
 
 export const mockCategories: CategoryItem[] = [
-  { name: '科技', value: 35, percentage: 35 },
-  { name: '教育', value: 22, percentage: 22 },
-  { name: '医疗', value: 18, percentage: 18 },
-  { name: '金融', value: 15, percentage: 15 },
+  { name: '课程学习', value: 35, percentage: 35 },
+  { name: '项目实战', value: 22, percentage: 22 },
+  { name: '在线考试', value: 18, percentage: 18 },
+  { name: '资源下载', value: 15, percentage: 15 },
   { name: '其他', value: 10, percentage: 10 },
 ]
 
@@ -94,6 +95,82 @@ export const mockActivities: ActivityItem[] = [
   { id: 'A010', type: 'success', message: '夜间批量任务顺利完成', time: '2024-01-15 09:05:00', source: '调度' },
 ]
 
+/** 数据中枢节点 */
+export const mockHubNodes: HubNode[] = [
+  {
+    id: 'center',
+    name: '如意数据中枢',
+    value: 100,
+    coord: [50, 50],
+    status: 'good',
+    description: '核心数据调度与处理中心',
+  },
+  {
+    id: 'course',
+    name: '课程学习',
+    value: 92,
+    coord: [50, 18],
+    status: 'good',
+    description: '课程访问与学习进度保持高活跃',
+  },
+  {
+    id: 'project',
+    name: '项目实战',
+    value: 86,
+    coord: [78, 30],
+    status: 'good',
+    description: '实战任务提交量稳定增长',
+  },
+  {
+    id: 'download',
+    name: '资料下载',
+    value: 75,
+    coord: [82, 55],
+    status: 'warning',
+    description: 'CDN 带宽使用率偏高',
+  },
+  {
+    id: 'qa',
+    name: '问答互动',
+    value: 88,
+    coord: [68, 78],
+    status: 'good',
+    description: '师生互动频次持续上升',
+  },
+  {
+    id: 'teacher',
+    name: '教师端',
+    value: 70,
+    coord: [32, 78],
+    status: 'good',
+    description: '教师在线批改与资源上传',
+  },
+  {
+    id: 'student',
+    name: '学员端',
+    value: 95,
+    coord: [18, 55],
+    status: 'good',
+    description: '学员活跃度创近期新高',
+  },
+  {
+    id: 'data-svc',
+    name: '数据服务',
+    value: 82,
+    coord: [22, 30],
+    status: 'warning',
+    description: '数据同步延迟偶发抖动',
+  },
+  {
+    id: 'alert',
+    name: '告警中心',
+    value: 65,
+    coord: [50, 85],
+    status: 'danger',
+    description: '近期有 3 条未处理告警',
+  },
+]
+
 /** 聚合的完整仪表盘数据 */
 export function getMockDashboardData(): DashboardData {
   return {
@@ -103,5 +180,6 @@ export function getMockDashboardData(): DashboardData {
     ranking: mockRanking,
     radar: mockRadar,
     activities: mockActivities,
+    hubNodes: mockHubNodes,
   }
 }

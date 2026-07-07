@@ -19,8 +19,8 @@ const props = defineProps<{
 const chartOption = computed(() => ({
   tooltip: {
     trigger: 'item',
-    backgroundColor: 'rgba(6, 30, 65, 0.9)',
-    borderColor: 'rgba(64, 169, 255, 0.3)',
+    backgroundColor: 'rgba(4, 18, 40, 0.92)',
+    borderColor: 'rgba(54, 207, 201, 0.25)',
     textStyle: { color: '#e8f0fe', fontSize: 12 },
     formatter: (params: any) => `${params.name}: ${params.value}%`,
   },
@@ -28,7 +28,7 @@ const chartOption = computed(() => ({
     orient: 'vertical',
     right: '5%',
     top: 'center',
-    textStyle: { color: 'rgba(232, 240, 254, 0.6)', fontSize: 11 },
+    textStyle: { color: 'rgba(232, 240, 254, 0.55)', fontSize: 11 },
     itemWidth: 10,
     itemHeight: 10,
     itemGap: 14,
@@ -36,21 +36,19 @@ const chartOption = computed(() => ({
   series: [
     {
       type: 'pie',
-      radius: ['45%', '70%'],
-      center: ['35%', '50%'],
+      radius: ['42%', '68%'],
+      center: ['38%', '50%'],
       avoidLabelOverlap: false,
       padAngle: 2,
       itemStyle: {
         borderRadius: 4,
-        borderColor: 'rgba(6, 30, 65, 0.8)',
+        borderColor: 'rgba(4, 18, 40, 0.8)',
         borderWidth: 2,
       },
-      label: {
-        show: false,
-      },
+      label: { show: false },
       emphasis: {
         label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#e8f0fe' },
-        itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' },
+        itemStyle: { shadowBlur: 12, shadowOffsetX: 0, shadowColor: 'rgba(54, 207, 201, 0.4)' },
       },
       labelLine: { show: false },
       data: props.data.map((item) => ({
@@ -63,15 +61,15 @@ const chartOption = computed(() => ({
 }))
 
 const colorMap: Record<string, string> = {
-  '科技': '#40a9ff',
-  '教育': '#36cfc9',
-  '医疗': '#73d13d',
-  '金融': '#ffc53d',
-  '其他': '#ff7a45',
+  '课程学习': '#36cfc9',
+  '项目实战': '#4fc3f7',
+  '在线考试': '#5cdbd3',
+  '资源下载': '#d4a017',
+  '其他': '#80deea',
 }
 
 function getColor(name: string): string {
-  return colorMap[name] || '#597ef7'
+  return colorMap[name] || '#4fc3f7'
 }
 </script>
 

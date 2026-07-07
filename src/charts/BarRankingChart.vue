@@ -19,8 +19,8 @@ const props = defineProps<{
 const chartOption = computed(() => ({
   tooltip: {
     trigger: 'axis',
-    backgroundColor: 'rgba(6, 30, 65, 0.9)',
-    borderColor: 'rgba(64, 169, 255, 0.3)',
+    backgroundColor: 'rgba(4, 18, 40, 0.92)',
+    borderColor: 'rgba(54, 207, 201, 0.25)',
     textStyle: { color: '#e8f0fe', fontSize: 12 },
     formatter: (params: any) => {
       const item = params[0]
@@ -29,16 +29,16 @@ const chartOption = computed(() => ({
   },
   grid: {
     left: '3%',
-    right: '8%',
+    right: '10%',
     bottom: '3%',
     top: '5%',
     containLabel: true,
   },
   xAxis: {
     type: 'value',
-    splitLine: { lineStyle: { color: 'rgba(64, 169, 255, 0.08)', type: 'dashed' } },
+    splitLine: { lineStyle: { color: 'rgba(54, 207, 201, 0.06)', type: 'dashed' } },
     axisLabel: {
-      color: 'rgba(232, 240, 254, 0.45)',
+      color: 'rgba(232, 240, 254, 0.35)',
       fontSize: 10,
       formatter: (v: number) => v >= 10000 ? `${(v / 10000).toFixed(0)}万` : String(v),
     },
@@ -46,8 +46,8 @@ const chartOption = computed(() => ({
   yAxis: {
     type: 'category',
     data: props.data.map((d) => d.name).reverse(),
-    axisLine: { lineStyle: { color: 'rgba(64, 169, 255, 0.15)' } },
-    axisLabel: { color: 'rgba(232, 240, 254, 0.65)', fontSize: 11 },
+    axisLine: { lineStyle: { color: 'rgba(54, 207, 201, 0.12)' } },
+    axisLabel: { color: 'rgba(232, 240, 254, 0.55)', fontSize: 11 },
     axisTick: { show: false },
   },
   series: [
@@ -59,18 +59,18 @@ const chartOption = computed(() => ({
           color: new echarts.graphic.LinearGradient(
             0, 0, 1, 0,
             [
-              { offset: 0, color: getBarColor(i, props.data.length) },
-              { offset: 1, color: getBarColorLight(i, props.data.length) },
+              { offset: 0, color: getBarColor(i) },
+              { offset: 1, color: getBarColorLight(i) },
             ]
           ),
           borderRadius: [0, 4, 4, 0],
         },
       })).reverse(),
-      barWidth: '55%',
+      barWidth: '50%',
       label: {
         show: true,
         position: 'right',
-        color: 'rgba(232, 240, 254, 0.5)',
+        color: 'rgba(232, 240, 254, 0.4)',
         fontSize: 10,
         formatter: (params: any) => {
           const idx = props.data.length - 1 - params.dataIndex
@@ -84,13 +84,13 @@ const chartOption = computed(() => ({
   ],
 }))
 
-function getBarColor(index: number, _total: number): string {
-  const colors = ['#40a9ff', '#36cfc9', '#73d13d', '#ffc53d', '#ff7a45', '#597ef7', '#9254de', '#f759ab']
+function getBarColor(index: number): string {
+  const colors = ['#36cfc9', '#4fc3f7', '#5cdbd3', '#3db8c0', '#80deea', '#26a69a', '#4dd0e1', '#b2ebf2']
   return colors[index % colors.length]
 }
 
-function getBarColorLight(index: number, _total: number): string {
-  const colors = ['#69c0ff', '#5cdbd3', '#95de64', '#ffd666', '#ff9c6e', '#85a5ff', '#b37feb', '#ff85c0']
+function getBarColorLight(index: number): string {
+  const colors = ['#5cdbd3', '#81d4fa', '#80deea', '#4db6ac', '#a5d8e8', '#80cbc4', '#80deea', '#d4f1f9']
   return colors[index % colors.length]
 }
 </script>

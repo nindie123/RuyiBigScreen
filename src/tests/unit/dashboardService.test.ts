@@ -88,4 +88,14 @@ describe('DashboardService in mock mode', () => {
     expect(data.trend.length).toBeGreaterThan(0)
     expect(data.ranking.length).toBeGreaterThan(0)
   }, MOCK_TIMEOUT)
+
+  it('realtime data should change between calls', async () => {
+    // 由于模拟器有 50ms 时间窗口缓存，间隔 100ms 调用确保不同帧
+    const data1 = await fetchDashboardAll()
+    await new Promise((r) => setTimeout(r, 100))
+    const data2 = await fetchDashboardAll()
+
+    // todayVisits 应该增长（只增不降）
+    expect(data2.summary.todayVisits).toBeGreaterThanOrEqual(data1.summary.todayVisits)
+  }, MOCK_TIMEOUT)
 })
