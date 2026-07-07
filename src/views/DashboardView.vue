@@ -6,7 +6,7 @@
         label="今日访问量"
         :value="store.summary.todayVisits"
         icon="👥"
-        color="#4fc3f7"
+        color="#f59e0b"
         :loading="store.loading"
         :trend="{ direction: 'up', text: '较昨日 +12.5%' }"
       />
@@ -14,7 +14,7 @@
         label="实时订单数"
         :value="store.summary.realtimeOrders"
         icon="📦"
-        color="#36cfc9"
+        color="#2dd4bf"
         :loading="store.loading"
         :trend="{ direction: 'up', text: '较昨日 +8.3%' }"
       />
@@ -22,7 +22,7 @@
         label="活跃用户数"
         :value="store.summary.activeUsers"
         icon="👤"
-        color="#5cdbd3"
+        color="#fb7185"
         :loading="store.loading"
         :trend="{ direction: 'up', text: '较昨日 +5.7%' }"
       />
@@ -30,9 +30,9 @@
         label="系统健康度"
         :value="store.summary.systemHealth"
         icon="❤️"
-        color="#d4a017"
+        color="#34d399"
         :loading="store.loading"
-        :trend="{ direction: 'down', text: '较昨日 -0.3%' }"
+        :trend="{ direction: 'up', text: '较昨日 +0.3%' }"
         :formatter="(v: number) => v.toFixed(1) + ' %'"
       />
     </template>
@@ -62,17 +62,18 @@
       <RadarAbilityChart :data="store.radar" :loading="store.loading" />
     </template>
 
-    <!-- 底部：动态活动列表 -->
+    <!-- 底部：实时动态 -->
     <template #footer>
       <div class="dashboard-activity">
-        <BasePanel title="实时动态" subtitle="系统消息">
+        <BasePanel title="实时动态" subtitle="SYSTEM FEED" flush>
           <div class="dashboard-activity__list">
             <div
               v-for="item in store.activities"
               :key="item.id"
               class="dashboard-activity__item"
+              :class="'dashboard-activity__item--' + item.type"
             >
-              <span class="dashboard-activity__dot" :class="`dashboard-activity__dot--${item.type}`"></span>
+              <span class="dashboard-activity__dot" :class="'dashboard-activity__dot--' + item.type"></span>
               <span class="dashboard-activity__message">{{ item.message }}</span>
               <span class="dashboard-activity__source">{{ item.source }}</span>
               <span class="dashboard-activity__time">{{ item.time }}</span>
@@ -118,72 +119,58 @@ onUnmounted(() => {
   &__list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     overflow-y: auto;
-    padding-right: 4px;
-
-    &::-webkit-scrollbar {
-      width: 3px;
-    }
-    &::-webkit-scrollbar-track {
-      background: rgba(54, 207, 201, 0.04);
-      border-radius: 2px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: rgba(54, 207, 201, 0.15);
-      border-radius: 2px;
-    }
+    padding-right: 2px;
   }
 
   &__item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-size: 11px;
     transition: background 0.2s;
 
-    &:hover {
-      background: rgba(54, 207, 201, 0.04);
-    }
+    &:hover { background: rgba(245, 158, 11, 0.03); }
+    &:nth-child(odd) { background: rgba(30, 41, 59, 0.3); }
 
-    &:nth-child(odd) {
-      background: rgba(54, 207, 201, 0.015);
-    }
+    &--warning { border-left: 2px solid rgba(245, 158, 11, 0.3); }
+    &--alert { border-left: 2px solid rgba(244, 114, 182, 0.3); }
   }
 
   &__dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     flex-shrink: 0;
 
-    &--info { background: #4fc3f7; box-shadow: 0 0 5px rgba(79, 195, 247, 0.35); }
-    &--success { background: #36cfc9; box-shadow: 0 0 5px rgba(54, 207, 201, 0.35); }
-    &--warning { background: #d4a017; box-shadow: 0 0 5px rgba(212, 160, 23, 0.35); }
-    &--alert { background: #ff6b6b; box-shadow: 0 0 6px rgba(255, 107, 107, 0.5); animation: blink 1.2s infinite; }
+    &--info { background: var(--primary, #f59e0b); }
+    &--success { background: var(--secondary, #2dd4bf); box-shadow: 0 0 5px rgba(45, 212, 191, 0.3); }
+    &--warning { background: var(--coral, #fb7185); box-shadow: 0 0 5px rgba(251, 113, 133, 0.3); }
+    &--alert { background: var(--rose, #f472b6); box-shadow: 0 0 5px rgba(244, 114, 182, 0.4); animation: blink 1.2s infinite; }
   }
 
   &__message {
     flex: 1;
-    color: rgba(232, 240, 254, 0.75);
+    color: rgba(240, 240, 255, 0.6);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__source {
-    color: rgba(232, 240, 254, 0.35);
-    font-size: 11px;
-    width: 36px;
+    color: rgba(240, 240, 255, 0.2);
+    font-size: 10px;
+    width: 32px;
     text-align: center;
     flex-shrink: 0;
   }
 
   &__time {
-    color: rgba(232, 240, 254, 0.3);
-    font-size: 11px;
+    color: rgba(240, 240, 255, 0.2);
+    font-size: 10px;
     font-family: 'Courier New', monospace;
     flex-shrink: 0;
   }
@@ -191,6 +178,6 @@ onUnmounted(() => {
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0.2; }
 }
 </style>

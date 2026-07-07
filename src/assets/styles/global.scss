@@ -1,37 +1,40 @@
 /**
  * 如意数据大屏 - 全局样式
  *
- * 如意国风科技蓝视觉主题
+ * 暖阳金橙视觉主题 (v3.0)
  *
  * 色板：
- * - 主背景：夜空蓝 #06142a → 墨蓝 #0a1e3d
- * - 主高亮：青蓝 #36cfc9, 湖蓝 #4fc3f7, 冰蓝 #80deea
- * - 辅助点缀：玉青 #5cdbd3, 鎏金 #d4a017
- * - 文字：冰白 #e8f0fe, 淡蓝灰 rgba(232, 240, 254, 0.6)
+ * - 主背景：暖夜蓝 #0f172a → 深茶褐 #1c1917
+ * - 主高亮：暖橙 #f59e0b, 珊瑚 #fb7185, 金盏 #fbbf24
+ * - 辅助点缀：晴空青 #2dd4bf, 日落紫 #a78bfa, 玫瑰 #f472b6
+ * - 文字：暖白 #fefce8
  */
 
-/* 如意国风科技蓝 CSS 变量 */
 :root {
-  --ruyi-bg-deep: #06142a;
-  --ruyi-bg-mid: #0a1e3d;
-  --ruyi-bg-light: #0f2847;
-  --ruyi-cyan: #36cfc9;
-  --ruyi-cyan-glow: rgba(54, 207, 201, 0.3);
-  --ruyi-blue: #4fc3f7;
-  --ruyi-blue-glow: rgba(79, 195, 247, 0.25);
-  --ruyi-ice: #80deea;
-  --ruyi-jade: #5cdbd3;
-  --ruyi-gold: #d4a017;
-  --ruyi-gold-glow: rgba(212, 160, 23, 0.3);
-  --ruyi-text: #e8f0fe;
-  --ruyi-text-dim: rgba(232, 240, 254, 0.55);
-  --ruyi-text-faint: rgba(232, 240, 254, 0.25);
-  --ruyi-border: rgba(54, 207, 201, 0.12);
-  --ruyi-border-glow: rgba(54, 207, 201, 0.25);
-  --ruyi-panel-bg: linear-gradient(135deg, rgba(6, 30, 65, 0.85) 0%, rgba(4, 18, 45, 0.92) 100%);
+  --bg-deep: #0f172a;
+  --bg-mid: #1a1a2e;
+  --bg-light: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.75);
+  --primary: #f59e0b;
+  --primary-glow: rgba(245, 158, 11, 0.3);
+  --primary-gradient: linear-gradient(135deg, #f59e0b 0%, #fb7185 100%);
+  --secondary: #2dd4bf;
+  --secondary-glow: rgba(45, 212, 191, 0.2);
+  --accent: #fbbf24;
+  --accent-glow: rgba(251, 191, 36, 0.25);
+  --coral: #fb7185;
+  --coral-glow: rgba(251, 113, 133, 0.2);
+  --emerald: #34d399;
+  --rose: #f472b6;
+  --sunset: #a78bfa;
+  --text: #fefce8;
+  --text-dim: rgba(254, 252, 232, 0.55);
+  --text-faint: rgba(254, 252, 232, 0.25);
+  --border: rgba(245, 158, 11, 0.12);
+  --border-glow: rgba(245, 158, 11, 0.2);
+  --panel-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
 }
 
-/* reset */
 *,
 *::before,
 *::after {
@@ -51,20 +54,18 @@ html, body {
 }
 
 body {
-  background: #06142a;
+  background: #0f172a;
   background-image:
     /* 科技网格 */
-    linear-gradient(rgba(54, 207, 201, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(54, 207, 201, 0.03) 1px, transparent 1px),
-    /* 径向光晕层 */
-    radial-gradient(ellipse at 20% 50%, rgba(6, 35, 75, 0.7) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 50%, rgba(6, 35, 75, 0.5) 0%, transparent 55%),
-    radial-gradient(ellipse at 50% 0%, rgba(15, 55, 110, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 110%, rgba(10, 50, 90, 0.15) 0%, transparent 40%);
+    linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.02) 1px, transparent 1px),
+    /* 暖色径向光晕 */
+    radial-gradient(ellipse at 20% 30%, rgba(251, 113, 133, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(30, 41, 59, 0.5) 0%, transparent 50%);
   background-size:
-    60px 60px,
-    60px 60px,
-    100% 100%,
+    50px 50px,
+    50px 50px,
     100% 100%,
     100% 100%,
     100% 100%;
@@ -73,25 +74,21 @@ body {
     0 0,
     0 0,
     0 0,
-    0 0,
     0 0;
-  color: #e8f0fe;
+  color: var(--text, #fefce8);
   position: relative;
 }
 
-/* 淡山峦背景 (伪元素实现) */
-body::before {
+/* 底部装饰光晕 - 暖色渐变 */
+body::after {
   content: '';
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 120px;
-  background:
-    /* 山峦层 1 */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 120'%3E%3Cpath d='M0,100 Q150,75 300,90 Q450,60 600,80 Q750,50 900,70 Q1050,55 1200,75 Q1350,60 1500,85 Q1650,70 1800,80 Q1900,72 1920,78 L1920,120 L0,120 Z' fill='rgba(54,207,201,0.025)'/%3E%3C/svg%3E") no-repeat bottom / 100% 120px,
-    /* 山峦层 2 */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 100'%3E%3Cpath d='M0,85 Q200,60 400,75 Q600,50 800,70 Q1000,55 1200,65 Q1400,45 1600,60 Q1800,50 1920,58 L1920,100 L0,100 Z' fill='rgba(79,195,247,0.015)'/%3E%3C/svg%3E") no-repeat bottom / 100% 100px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--coral), var(--accent), transparent);
+  opacity: 0.35;
   pointer-events: none;
   z-index: 0;
 }
@@ -103,27 +100,18 @@ body::before {
   z-index: 1;
 }
 
-/* 滚动条全局样式 */
+/* 滚动条 */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(54, 207, 201, 0.15);
+  background: rgba(245, 158, 11, 0.15);
   border-radius: 2px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(54, 207, 201, 0.25);
-}
-
-/* 数字字体 */
-@font-face {
-  font-family: 'DINPro';
-  src: local('DINPro'), local('Courier New');
+  background: rgba(245, 158, 11, 0.3);
 }

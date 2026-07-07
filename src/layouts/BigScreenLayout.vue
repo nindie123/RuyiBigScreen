@@ -1,5 +1,5 @@
 <template>
-  <div class="big-screen" ref="screenRef" :style="screenScale.style">
+  <div class="big-screen" :style="screenScale.style">
     <!-- 顶部区域 -->
     <div class="big-screen__header">
       <ScreenHeader />
@@ -12,18 +12,13 @@
 
     <!-- 主内容区域：三列布局 -->
     <div class="big-screen__main">
-      <!-- 左侧列 -->
       <div class="big-screen__column big-screen__column--left">
         <slot name="left-top" />
         <slot name="left-bottom" />
       </div>
-
-      <!-- 中间列 -->
       <div class="big-screen__column big-screen__column--center">
         <slot name="center" />
       </div>
-
-      <!-- 右侧列 -->
       <div class="big-screen__column big-screen__column--right">
         <slot name="right-top" />
         <slot name="right-bottom" />
@@ -34,6 +29,9 @@
     <div class="big-screen__footer">
       <slot name="footer" />
     </div>
+
+    <!-- 环境水印 -->
+    <div class="big-screen__watermark">RUYI BIG SCREEN v2.0 · DEMO</div>
   </div>
 </template>
 
@@ -51,9 +49,22 @@ const { screenScale } = useScreenResize()
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 0 20px 16px;
-  gap: 12px;
+  padding: 0 24px 12px;
+  gap: 10px;
   transform-origin: left top;
+  position: relative;
+
+  &__watermark {
+    position: absolute;
+    bottom: 20px;
+    right: 36px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(102, 126, 234, 0.12);
+    font-family: 'Courier New', monospace;
+    pointer-events: none;
+    z-index: 0;
+  }
 
   &__header {
     flex-shrink: 0;
@@ -62,43 +73,41 @@ const { screenScale } = useScreenResize()
   &__metrics {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    gap: 12px;
     flex-shrink: 0;
   }
 
   &__main {
     flex: 1;
     display: grid;
-    grid-template-columns: 1.2fr 1.8fr 1.2fr;
-    gap: 14px;
+    grid-template-columns: 1.2fr 1.9fr 1.2fr;
+    gap: 12px;
     min-height: 0;
   }
 
   &__column {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     min-height: 0;
 
     &--left {
-      > :first-child { flex: 1.2; }
+      > :first-child { flex: 1.3; }
       > :last-child { flex: 1; }
     }
-
     &--center {
       > :first-child { flex: 1; }
     }
-
     &--right {
-      > :first-child { flex: 1.2; }
+      > :first-child { flex: 1.3; }
       > :last-child { flex: 1; }
     }
   }
 
   &__footer {
     flex-shrink: 0;
-    min-height: 100px;
-    max-height: 130px;
+    min-height: 90px;
+    max-height: 115px;
   }
 }
 </style>

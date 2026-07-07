@@ -1,5 +1,5 @@
 <template>
-  <div class="metric-card" :style="{ '--accent-color': color, '--accent-glow': color + '33' }">
+  <div class="metric-card" :style="{ '--accent': color, '--accent-glow': color + '33' }">
     <div class="metric-card__icon" v-if="icon">
       <span class="metric-card__icon-text">{{ icon }}</span>
     </div>
@@ -9,13 +9,12 @@
         {{ loading ? '---' : displayValue }}
       </span>
     </div>
-    <div class="metric-card__trend" v-if="trend && !loading">
-      <span class="metric-card__trend-value" :class="`metric-card__trend--${trend.direction}`">
+    <div class="metric-card__footer">
+      <span v-if="trend && !loading" class="metric-card__trend" :class="`metric-card__trend--${trend.direction}`">
         {{ trend.direction === 'up' ? '↑' : '↓' }} {{ trend.text }}
       </span>
     </div>
     <div class="metric-card__glow"></div>
-    <div class="metric-card__shimmer"></div>
   </div>
 </template>
 
@@ -30,10 +29,7 @@ const props = defineProps<{
   icon?: string
   color?: string
   loading?: boolean
-  trend?: {
-    direction: 'up' | 'down'
-    text: string
-  }
+  trend?: { direction: 'up' | 'down'; text: string }
   formatter?: (v: number) => string
 }>()
 
@@ -47,38 +43,33 @@ const displayValue = computed(() => {
 <style scoped lang="scss">
 .metric-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(6, 26, 55, 0.85) 0%, rgba(8, 35, 70, 0.9) 100%);
-  border: 1px solid rgba(54, 207, 201, 0.1);
-  border-radius: 10px;
-  padding: 18px 22px 16px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(26, 26, 46, 0.7) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.08);
+  border-radius: 6px;
+  padding: 14px 18px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   overflow: hidden;
   transition: all 0.3s ease;
-  cursor: default;
+  backdrop-filter: blur(4px);
 
   &:hover {
-    border-color: rgba(54, 207, 201, 0.28);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(54, 207, 201, 0.12);
+    border-color: rgba(245, 158, 11, 0.18);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);
   }
 
   &__icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(54, 207, 201, 0.06);
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.06);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(54, 207, 201, 0.12);
-    margin-bottom: 2px;
+    border: 1px solid rgba(245, 158, 11, 0.08);
   }
-
-  &__icon-text {
-    font-size: 18px;
-  }
+  &__icon-text { font-size: 15px; }
 
   &__info {
     display: flex;
@@ -88,67 +79,39 @@ const displayValue = computed(() => {
   }
 
   &__label {
-    font-size: 12px;
-    color: rgba(232, 240, 254, 0.5);
+    font-size: 11px;
+    color: rgba(254, 252, 232, 0.4);
     letter-spacing: 0.5px;
   }
 
   &__value {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
-    color: var(--ruyi-text, #e8f0fe);
-    font-family: 'DINPro', 'Courier New', monospace;
-    letter-spacing: 1px;
-    text-shadow: 0 0 12px var(--accent-glow, rgba(54, 207, 201, 0.2));
-
-    &--loading {
-      animation: pulse 1.5s ease-in-out infinite;
-    }
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 20px var(--accent-glow);
+    &--loading { animation: pulse 1.5s ease-in-out infinite; }
   }
+
+  &__footer { z-index: 1; margin-top: auto; }
 
   &__trend {
-    z-index: 1;
-  }
-
-  &__trend-value {
-    font-size: 11px;
+    font-size: 10px;
     padding: 2px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+    &--up { color: var(--emerald, #34d399); background: rgba(52, 211, 153, 0.06); }
+    &--down { color: var(--coral, #fb7185); background: rgba(251, 113, 133, 0.06); }
   }
 
-  &__trend--up {
-    color: #36cfc9;
-    background: rgba(54, 207, 201, 0.08);
-  }
-
-  &__trend--down {
-    color: #d4a017;
-    background: rgba(212, 160, 23, 0.08);
-  }
-
-  /* 背景光晕 */
   &__glow {
     position: absolute;
-    top: -50%;
-    right: -30%;
-    width: 110px;
-    height: 110px;
-    background: radial-gradient(circle, var(--accent-glow, rgba(54, 207, 201, 0.06)) 0%, transparent 70%);
+    top: -40%;
+    right: -20%;
+    width: 90px; height: 90px;
+    background: radial-gradient(circle, var(--accent-glow, rgba(245, 158, 11, 0.04)) 0%, transparent 70%);
     border-radius: 50%;
-    pointer-events: none;
-  }
-
-  /* 顶部扫描线微光 */
-  &__shimmer {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent-color, #36cfc9), transparent);
-    opacity: 0.15;
-    animation: shimmer 4s ease-in-out infinite;
     pointer-events: none;
   }
 }
@@ -156,10 +119,5 @@ const displayValue = computed(() => {
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
-}
-
-@keyframes shimmer {
-  0% { left: -60%; }
-  100% { left: 160%; }
 }
 </style>

@@ -123,10 +123,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
   function startRealtime(): void {
     if (refreshTimer.value) return // 避免重复启动
     isRealtime.value = true
-    logger.info('[DashboardStore] 实时刷新已启动 (2s 间隔)')
+    logger.info('[DashboardStore] 实时刷新已启动 (6s 间隔)')
     refreshTimer.value = setInterval(() => {
       loadAllData()
-    }, 2000)
+    }, 6000)
   }
 
   /**
